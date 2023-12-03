@@ -22,15 +22,36 @@ resource "azurerm_linux_virtual_machine" "linux-vm" {
   }
 
   connection {
-    type        = "ssh"
+    type        = "ssh" #winrm is for windows related machines
     host        = self.public_ip_address
     user        = self.admin_username
     private_key = file("${path.module}/ssh-file/terraform-azure.pem")
   }
-
+  #file provisioner
   provisioner "file" {
-    source = "/data/sample.txt"
+    source = "data/sample.txt"
     #content = "Hello World" ##We can also use the content to be displayed at dest path
-    destination = "/tmp/sample.txt"
+    destination = "/tmp/sample.txt" #remote destination
+    #on_failure = continue/fail
   }
+  #remote-exec provisioner
+  provisioner "remote-exec" {
+    inline = [
+      "sleep 120",
+      "sudo mkdir /apps",
+      "sudo cp /tmp/sample.txt /apps"
+    ]
+  }
+  provisioner "local-exec" {
+    when        = create
+    command     = "echo ${azurerm_linux_virtual_machine.linux-vm.public_ip_address} >> creation-time.txt"
+    working_dir = "outputs/"
+  }
+
+  provisioner "local-exec" {
+    when        = destroy
+    command     = "echo Destroyed at %DATE% >> destruction-time.txt"
+    working_dir = "outputs/"
+  }
+
 }
