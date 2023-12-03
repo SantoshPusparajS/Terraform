@@ -18,3 +18,7 @@ resource "azurerm_resource_group" "rg" {
 #   name     = "${each.key}-resource-group"
 #   location = each.key
 # }
+
+#for_each chaining
+#substituting the resources directly to each.key
+#for_each = azurerm_network_interface.my-nic
