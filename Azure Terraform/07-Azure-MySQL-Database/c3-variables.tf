@@ -25,3 +25,13 @@ variable "auto_grow_enabled_value" {
   type        = bool
   default     = true
 }
+
+#Object type: contains types in key value pair format
+variable "threat_detection_policy" {
+  description = "Azure MYSQL DB threat detection policy"
+  type = object({
+    enabled              = bool,
+    retention_days       = number,
+    email_account_admins = bool,
+  email_addresses = list(string) })
+}

@@ -6,6 +6,13 @@ resource "azurerm_mysql_server" "mysql_server" {
   administrator_login          = var.db_username
   administrator_login_password = var.db_password
 
+  threat_detection_policy {
+    enabled              = var.threat_detection_policy.enabled
+    retention_days       = var.threat_detection_policy.retention_days
+    email_account_admins = var.threat_detection_policy.email_account_admins
+    email_addresses      = var.threat_detection_policy.email_addresses
+  }
+
   sku_name   = "B_Gen5_2"
   storage_mb = 5120
   version    = "8.0"
